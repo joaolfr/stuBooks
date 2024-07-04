@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { Details, Home } from '@screens/index'
+import { Details, Home, BooksList } from '@screens/index'
 import theme from '@theme/index'
 
 const { Navigator, Screen } = createNativeStackNavigator()
@@ -13,6 +13,11 @@ export function AppRoutes() {
       }}
     >
       <Screen name="home" component={Home} />
+      <Screen
+        name="booksList"
+        component={BooksList}
+        options={{ animation: 'fade', animationDuration: 500 }}
+      />
       <Screen
         name="details"
         component={Details}

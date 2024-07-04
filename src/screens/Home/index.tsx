@@ -1,8 +1,9 @@
-import useBookdByKeyword from '@api/books/getBooksByKeyword'
+import useBookByKeyword from '@api/books/getBooksByKeyword'
 import { Button } from '@components/Button'
 import { SearchInput } from '@components/SearchInput'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import theme from '@theme/index'
+import { isValidISBNCode } from '@utils/isISBN'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
 import Animated, {
@@ -15,21 +16,26 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 
 import { BooksList } from './Components/BooksList'
 import useHome from './useHome'
+import useBookdByISBN from '@api/books/getBookByISBN'
 
 export function Home() {
   const navigation = useNavigation()
   const { favorites, handleFavorite, fetchFavorites } = useHome()
 
   const [startIndex, setStartIndex] = useState(0)
-  const [inputKeyword, setInputKeyword] = useState('React')
+  const [inputKeyword, setInputKeyword] = useState('9781786469571')
   const [random, setRandom] = useState(false)
 
   const { fetchNextPage, data, refetch, isFetching, isSuccess } =
-    useBookdByKeyword({ inputKeyword, startIndex })
+    useBookByKeyword({ inputKeyword, startIndex })
+
+  const { data: dataISBN } = useBookdByISBN({ isbn: inputKeyword })
 
   async function handlePress() {
-    await refetch()
-    setRandom(true)
+    // await refetch()
+    // setShowList(true)
+    // setRandom(true)
+    navigation.navigate('booksList', { inputKeyword, books: dataISBN })
   }
 
   const booksStore = useMemo(() => {
@@ -57,7 +63,7 @@ export function Home() {
         setInputKeyword={setInputKeyword}
         handlePress={handlePress}
         handleClose={handleClose}
-        booksStore={booksStore}
+        booksStore={dataISBN.items}
         favorites={favorites}
         handleFavorite={handleFavorite}
         navigation={navigation}
@@ -71,6 +77,10 @@ export function Home() {
       fetchFavorites()
     }, [fetchFavorites]),
   )
+
+  useEffect(() => {
+    console.log(isValidISBNCode('React'))
+  }, [])
 
   return (
     <SafeAreaView mode="margin" style={styles.container}>

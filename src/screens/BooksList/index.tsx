@@ -1,30 +1,40 @@
 import { ListCard } from '@components/ListCard'
 import { SearchInput } from '@components/SearchInput'
+import { useNavigation, useRoute } from '@react-navigation/native'
 import theme from '@theme/index'
+import { useState } from 'react'
 import { ActivityIndicator, FlatList, StyleSheet } from 'react-native'
 import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated'
 
-export function BooksList({
-  inputKeyword,
-  setInputKeyword,
-  handlePress,
-  handleClose,
-  booksStore,
-  favorites,
-  handleFavorite,
-  navigation,
-  fetchNextPage,
-}) {
-  const renderFooter = () => {
-    return (
-      <ActivityIndicator
-        color={theme.COLORS.PRIMARY}
-        size="large"
-        style={styles.loadingIdication}
-      />
-    )
+type RouteParams = {
+  inputKeyword: string
+  books: []
+}
+
+export function BooksList() {
+  const navigation = useNavigation()
+  const route = useRoute()
+  const { inputKeyword, books } = route.params as RouteParams
+
+  const [input, setInput] = useState(inputKeyword)
+
+  function handlePress() {
+    console.log('pressed')
   }
-  console.log(booksStore)
+  function handleClose() {
+    console.log('closed')
+    navigation.goBack()
+  }
+
+//   const renderFooter = () => {
+//     return (
+//       <ActivityIndicator
+//         color={theme.COLORS.PRIMARY}
+//         size="large"
+//         style={styles.loadingIdication}
+//       />
+//     )
+//   }
   return (
     <Animated.View
       style={{
@@ -36,13 +46,13 @@ export function BooksList({
       exiting={FadeOutDown.duration(300)}
     >
       <SearchInput
-        value={inputKeyword}
-        onChange={setInputKeyword}
+        value={input}
+        onChange={setInput}
         submit={handlePress}
         handleClose={handleClose}
       />
-      <FlatList
-        data={booksStore}
+      {/* <FlatList
+        data={books}
         keyExtractor={(item, index) => `${index}`}
         onEndReached={fetchNextPage}
         ListFooterComponent={renderFooter}
@@ -59,7 +69,7 @@ export function BooksList({
             )}
           />
         )}
-      />
+      /> */}
     </Animated.View>
   )
 }

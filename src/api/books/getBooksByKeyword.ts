@@ -1,12 +1,25 @@
+import { api } from '@api/config'
 import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query'
 
-import { fetchBooks, GetBooksQueryParams } from '../config'
+type GetBooksQueryParams = {
+  inputKeyword: string
+  startIndex: number
+}
 
-export const useBookdByKeyword = (params: GetBooksQueryParams) => {
+const fetchBooks = async ({
+  inputKeyword,
+  startIndex,
+}: GetBooksQueryParams) => {
+  const { data } = await api.get(
+    `${inputKeyword}&startIndex=${startIndex}&maxResults=20`,
+  )
+  return data
+}
+
+export const useBookByKeyword = (params: GetBooksQueryParams) => {
   return useInfiniteQuery({
     queryKey: ['bookies', params],
     queryFn: ({ pageParam }) => {
-      console.log('parasm: ', pageParam)
       return fetchBooks(pageParam)
     },
     enabled: false,
@@ -21,4 +34,4 @@ export const useBookdByKeyword = (params: GetBooksQueryParams) => {
   })
 }
 
-export default useBookdByKeyword
+export default useBookByKeyword
