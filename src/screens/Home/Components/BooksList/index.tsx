@@ -1,6 +1,7 @@
 import { ListCard } from '@components/ListCard'
 import { SearchInput } from '@components/SearchInput'
-import { ActivityIndicator, FlatList } from 'react-native'
+import theme from '@theme/index'
+import { ActivityIndicator, FlatList, StyleSheet } from 'react-native'
 import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated'
 
 export function BooksList({
@@ -17,9 +18,9 @@ export function BooksList({
   const renderFooter = () => {
     return (
       <ActivityIndicator
-        color="red"
+        color={theme.COLORS.PRIMARY}
         size="large"
-        style={{ marginVertical: 10 }}
+        style={styles.loadingIdication}
       />
     )
   }
@@ -61,3 +62,9 @@ export function BooksList({
     </Animated.View>
   )
 }
+
+const styles = StyleSheet.create({
+  loadingIdication: {
+    marginVertical: theme.PADDING.p1,
+  },
+})

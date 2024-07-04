@@ -70,22 +70,25 @@ export function Details() {
           style={styles.header}
           onPress={() => navigation.goBack()}
         >
-          <EvilIcons name="chevron-left" size={40} />
-          <Text size="LG" color="black">
+          <EvilIcons
+            name="chevron-left"
+            size={40}
+            color={theme.COLORS.GRAY_700}
+          />
+          <Text size="LG" color={theme.COLORS.GRAY_700}>
             back
           </Text>
         </TouchableOpacity>
         <View style={styles.infoCard}>
           <Image
             source={{ uri: bookInfo.imageLinks?.thumbnail }}
-            height={135}
-            width={95}
+            height={theme.PADDING.p6 * 5}
+            width={theme.PADDING.p7 * 3}
             alt={bookInfo.title}
           />
           <View style={styles.headerWrapper}>
             <Text size="SM" color={theme.COLORS.GRAY_700} weight="bold">
               {bookInfo.title}
-              {'\n'}
             </Text>
             <View style={styles.detailsText}>
               <Text size="MD" color={theme.COLORS.GRAY_700}>
@@ -104,12 +107,12 @@ export function Details() {
           >
             {isFavorite ? (
               <View style={styles.listButtonWrapper}>
-                <EvilIcons name="star" size={20} color={'#3092FA'} />
-                <Text color={'#3092FA'}>Remove from fav</Text>
+                <EvilIcons name="star" size={20} color={theme.COLORS.PRIMARY} />
+                <Text color={theme.COLORS.PRIMARY}>Remove from fav</Text>
               </View>
             ) : (
               <View style={styles.listButtonWrapper}>
-                <EvilIcons name="star" size={20} color={'#fff'} />
+                <EvilIcons name="star" size={20} color={theme.COLORS.WHITE} />
                 <Text>Add to fav</Text>
               </View>
             )}
@@ -118,11 +121,16 @@ export function Details() {
             <Text>Add to wish</Text>
           </TouchableOpacity>
         </View>
-        <Text weight="bold" size="MD" color="black" style={styles.description}>
+        <Text
+          weight="bold"
+          size="MD"
+          color={theme.COLORS.GRAY_700}
+          style={styles.description}
+        >
           About
         </Text>
         {/* TODO: fix text colors around the app */}
-        <Text size="MD" color="black">
+        <Text size="MD" color={theme.COLORS.GRAY_700}>
           {bookInfo.description}
         </Text>
       </ScrollView>
@@ -142,26 +150,26 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   infoCard: {
-    padding: 15,
-    marginVertical: 10,
+    padding: theme.PADDING.p3,
+    marginVertical: theme.PADDING.p1,
     backgroundColor: theme.COLORS.CARD_BG,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-    height: 167,
+    height: theme.PADDING.p8 * 4,
     borderRadius: 8,
   },
   headerWrapper: {
     height: '100%',
     flex: 1,
-    marginLeft: 10,
+    marginLeft: theme.PADDING.p1,
     justifyContent: 'space-between',
   },
   detailsText: { flexDirection: 'row', flexWrap: 'wrap' },
   buttonWrapper: {
-    width: 259,
-    height: 36,
+    width: theme.PADDING.p7 * 8,
+    height: theme.PADDING.p8,
     borderRadius: 22,
     flexDirection: 'row',
     top: -20,
@@ -177,22 +185,22 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#C8E0FA', // TODO: implement the reference to the theme colors
+    backgroundColor: theme.COLORS.STANDART, // TODO: implement the reference to the theme colors
   },
   favButton: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#3092FA', // TODO: implement the reference to the theme colors
+    backgroundColor: theme.COLORS.PRIMARY, // TODO: implement the reference to the theme colors
   },
   wishButton: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#3092FA',
+    backgroundColor: theme.COLORS.PRIMARY,
   },
   description: {
     alignSelf: 'flex-start',
-    marginVertical: 10,
+    marginVertical: theme.PADDING.p1,
   },
 })

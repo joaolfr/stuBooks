@@ -2,10 +2,10 @@ import { Text } from '@components/Text'
 import theme from '@theme/index'
 import { ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native'
 
-interface CustomButtonProps {
+type CustomButtonProps = {
   children: React.ReactNode
   onPress: () => void
-  type?: 'primary' | 'secondary' | 'clear'
+  type: 'primary' | 'secondary' | 'clear'
   fetching: boolean
 }
 
@@ -40,32 +40,25 @@ export const Button = ({
 
 const styles = StyleSheet.create({
   button: {
-    padding: 10,
-    borderRadius: 27,
+    padding: theme.PADDING.p1,
+    borderRadius: theme.PADDING.p6,
     width: '100%',
-    height: 54,
+    height: theme.PADDING.p6 * 2,
     justifyContent: 'center',
   },
   primary: {
-    backgroundColor: theme.COLORS.ACTIVE,
+    backgroundColor: theme.COLORS.PRIMARY,
   },
   secondary: {
-    backgroundColor: 'red',
-  },
-  clear: {
-    backgroundColor: 'transparent',
-    borderWidth: 2,
-    borderColor: 'black',
-    borderRadius: 20,
+    backgroundColor: theme.COLORS.PRIMARY,
   },
   text: {
-    fontSize: 20,
     textAlign: 'center',
   },
   buttonText: {
-    color: 'white',
+    color: theme.COLORS.WHITE,
   },
   clearButtonText: {
-    color: 'black',
+    color: theme.COLORS.GRAY_700,
   },
 })

@@ -2,12 +2,10 @@ export default {
   COLORS: {
     APP_BG: '#FFF',
     WHITE: '#FFFFFF',
-    STANDART: '#7A838C',
-    ACTIVE: '#3092FA',
+    STANDART: '#C8E0FA',
+    PRIMARY: '#3092FA',
+    SECONDAY: '#F064FC',
     CARD_BG: '#E6EBEF',
-
-    RED: '#F75A68',
-    RED_DARK: '#AA2834',
 
     GRAY_700: '#121214',
     GRAY_600: '#202024',
@@ -26,5 +24,15 @@ export default {
     MD: 12,
     LG: 18,
     XL: 24,
+  },
+  PADDING: {
+    p1: 10,
+    p2: 12,
+    p3: 16,
+    p4: 20,
+    p5: 24,
+    p6: 28,
+    p7: 32,
+    p8: 40,
   },
 }

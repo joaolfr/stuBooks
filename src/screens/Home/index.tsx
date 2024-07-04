@@ -2,6 +2,7 @@ import useBookdByKeyword from '@api/books/getBooksByKeyword'
 import { Button } from '@components/Button'
 import { SearchInput } from '@components/SearchInput'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import theme from '@theme/index'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
 import Animated, {
@@ -77,12 +78,12 @@ export function Home() {
         <Animated.View
           exiting={FadeOutUp.duration(300)}
           entering={FadeInUp.duration(1000)}
-          style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}
+          style={styles.inputWrapper}
         >
           <Image
             source={require('@assets/logo.png')}
             alt="logo"
-            style={{ marginBottom: 40 }}
+            style={styles.logo}
           />
 
           <SearchInput
@@ -95,13 +96,13 @@ export function Home() {
       {showList && renderList()}
 
       {!random && (
-        <View style={{ width: '100%' }}>
+        <View style={styles.footer}>
           <Animated.View
             entering={FadeInDown.duration(1000)}
             exiting={FadeOutDown.duration(300)}
           >
             {/* TODO: for some reason, pressing the button without text is seaching something and not showing anything */}
-            <Button fetching={isFetching} onPress={handlePress}>
+            <Button type="primary" fetching={isFetching} onPress={handlePress}>
               <Text>Search</Text>
             </Button>
           </Animated.View>
@@ -117,4 +118,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  logo: {
+    marginBottom: theme.PADDING.p8,
+  },
+  inputWrapper: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  footer: { width: '100%' },
 })

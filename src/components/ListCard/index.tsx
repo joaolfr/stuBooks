@@ -38,14 +38,13 @@ export function ListCard({
     >
       <Image
         source={{ uri: volumeInfo.imageLinks?.smallThumbnail }}
-        height={121}
-        width={81}
+        height={theme.PADDING.p8 * 3}
+        width={theme.PADDING.p8 * 2}
         alt={volumeInfo.title}
       />
       <View style={styles.insideContainer}>
         <Text size="SM" color={theme.COLORS.GRAY_700} weight="bold">
           {volumeInfo.title}
-          {'\n'}
         </Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
           <Text size="MD" color={theme.COLORS.GRAY_700}>
@@ -68,20 +67,20 @@ export function ListCard({
           >
             {isFavorite ? (
               <View style={styles.listButtonWrapper}>
-                <EvilIcons name="star" size={20} color={'white'} />
+                <EvilIcons name="star" size={20} color={theme.COLORS.WHITE} />
                 <Text color="white">Remove favorite</Text>
               </View>
             ) : (
               // TODO: the change between status, due to the async list get, sometimes take time, need some feedback
               <View style={styles.listButtonWrapper}>
-                <EvilIcons name="star" size={20} color={'#3092FA'} />
+                <EvilIcons name="star" size={20} color={theme.COLORS.PRIMARY} />
 
-                <Text color="#3092FA">Add to favorites</Text>
+                <Text color={theme.COLORS.PRIMARY}>Add to favorites</Text>
               </View>
             )}
           </TouchableOpacity>
           <TouchableOpacity style={styles.readingListButton}>
-            <Text color="white">Add to reading list</Text>
+            <Text color={theme.COLORS.WHITE}>Add to reading list</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -91,20 +90,20 @@ export function ListCard({
 
 const styles = StyleSheet.create({
   cardWrapper: {
-    padding: 10,
-    marginVertical: 10,
+    padding: theme.PADDING.p1,
+    marginVertical: theme.PADDING.p1,
     backgroundColor: theme.COLORS.CARD_BG,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     width: '100%',
-    height: 141,
+    height: theme.PADDING.p6 * 5,
     borderRadius: 8,
   },
   insideContainer: {
     height: '100%',
     flex: 1,
-    marginLeft: 10,
+    marginLeft: theme.PADDING.p1,
     justifyContent: 'space-between',
   },
   buttonsWrapper: {
@@ -119,27 +118,27 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
   },
   activeFavButton: {
-    height: 28,
-    borderRadius: 14,
+    height: theme.PADDING.p6,
+    borderRadius: theme.PADDING.p3,
     width: '48%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#3092FA',
+    backgroundColor: theme.COLORS.PRIMARY,
   },
   favButton: {
-    height: 28,
-    borderRadius: 14,
+    height: theme.PADDING.p6,
+    borderRadius: theme.PADDING.p6 / 2,
     width: '48%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: theme.COLORS.WHITE,
   },
   readingListButton: {
-    height: 28,
-    borderRadius: 14,
+    height: theme.PADDING.p6,
+    borderRadius: theme.PADDING.p6 / 2,
     width: '48%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F064FC',
+    backgroundColor: theme.COLORS.SECONDAY,
   },
 })

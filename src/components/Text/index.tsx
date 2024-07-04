@@ -2,7 +2,7 @@ import theme from '@theme/index'
 import type { StyleProp, TextStyle } from 'react-native'
 import { StyleSheet, Text as RNText } from 'react-native'
 
-interface TextProps {
+type TextProps = {
   children: React.ReactNode
   style?: StyleProp<TextStyle>
   size?: 'SM' | 'MD' | 'LG' | 'XL'

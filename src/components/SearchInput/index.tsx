@@ -56,12 +56,12 @@ export const SearchInput = ({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    height: 59,
-    backgroundColor: '#fff',
+    height: theme.PADDING.p6 * 2,
+    backgroundColor: theme.COLORS.WHITE,
     borderRadius: 30,
-    paddingVertical: 10,
-    paddingHorizontal: 30,
-    shadowColor: '#000',
+    paddingVertical: theme.PADDING.p1,
+    paddingHorizontal: theme.PADDING.p7,
+    shadowColor: theme.COLORS.GRAY_700,
     shadowOffset: {
       width: 0,
       height: 3,
@@ -72,10 +72,10 @@ const styles = StyleSheet.create({
     elevation: 6,
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 30,
+    marginBottom: theme.PADDING.p7,
   },
   focused: {
-    borderColor: theme.COLORS.ACTIVE,
+    borderColor: theme.COLORS.PRIMARY,
     borderWidth: 1.5,
   },
   input: { flex: 1, height: '100%' },
