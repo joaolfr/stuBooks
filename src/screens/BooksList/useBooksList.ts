@@ -8,7 +8,7 @@ type NewBook = {
   publisher: string
 }
 
-export default function useHome() {
+export default function useBooksList() {
   // Favorites
   const [favorites, setFavorites] = useState<NewBook[]>()
 

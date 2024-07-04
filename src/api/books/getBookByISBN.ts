@@ -1,5 +1,5 @@
 import { api } from '@api/config'
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 
 type GetBooksQueryParams = {
   isbn: string
@@ -7,18 +7,18 @@ type GetBooksQueryParams = {
 
 const fetchBooks = async ({ isbn }: GetBooksQueryParams) => {
   const { data } = await api.get(`isbn:${isbn}`)
-  console.log('data', data.items[0].volumeInfo.title)
   return data
 }
 
-export const useBookdByISBN = (params: GetBooksQueryParams) => {
+export const useBookByISBN = (params: GetBooksQueryParams) => {
   return useQuery({
     queryKey: ['booksByISBN', params],
     queryFn: () => {
       return fetchBooks(params)
     },
-    // enabled: false,
+    enabled: false,
+    placeholderData: keepPreviousData,
   })
 }
 
-export default useBookdByISBN
+export default useBookByISBN

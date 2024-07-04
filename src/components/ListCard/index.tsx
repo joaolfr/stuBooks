@@ -33,7 +33,7 @@ export function ListCard({
     <TouchableOpacityAnimated
       style={styles.cardWrapper}
       // TODO: this is causing a delay on render more items, bc the app take in consideration the delay for each item
-      entering={FadeInDown.duration(200).delay(100 * index)}
+      entering={FadeInDown.duration(200).delay(200 * index)}
       onPress={press}
     >
       <Image
