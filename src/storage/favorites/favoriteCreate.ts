@@ -1,6 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { FAVORITE_COLLECTION } from '@storage/storageConfig'
 import { AppError } from '@utils/AppError'
+import { EVENT } from '@utils/events'
+import track from '@utils/events/config'
 
 import { favoritesGetAll } from './favoritesGetAll'
 
@@ -23,7 +25,7 @@ export async function favoriteCreate(newFavorites: NewBook) {
     }
     const storage = JSON.stringify([...storedFavorites, newFavorites])
     await AsyncStorage.setItem(FAVORITE_COLLECTION, storage)
-    // AsyncStorage.clear()
+    track(EVENT.BookAddedToFavorites, { data: newFavorites })
   } catch (error) {
     throw error
   }

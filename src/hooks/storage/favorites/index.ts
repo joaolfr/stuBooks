@@ -3,19 +3,19 @@ import {
   favoriteDelete,
   favoritesGetAll,
 } from '@storage/favorites'
-import {
-  readingListCreate,
-  readingListDelete,
-  readingListGetAll,
-} from '@storage/readingList'
 import { useState } from 'react'
 
 type NewBook = {
   title: string
+  authors: string[]
   publisher: string
+  publishedDate: string
+  imageLinks: {
+    thumbnail: string
+  }
 }
 
-export default function useBookDetail() {
+export default function useFavoritesList() {
   // Favorites
   const [favorites, setFavorites] = useState<NewBook[]>()
 
@@ -29,7 +29,7 @@ export default function useBookDetail() {
     }
   }
 
-  async function handleFavorite(bookInfo) {
+  async function handleFavorite(bookInfo: NewBook) {
     const isIt = favorites?.some((book) => book.title === bookInfo.title)
     if (isIt) {
       await favoriteDelete(bookInfo.title)
@@ -42,45 +42,14 @@ export default function useBookDetail() {
 
     await fetchFavorites()
   }
-
-  async function isFavorite(bookInfo){
+  function isFavorite(bookInfo: NewBook) {
     const isIt = favorites?.some((book) => book.title === bookInfo.title)
     return isIt
-  }
-
-  // Reading List
-
-  const [readingList, setReadingList] = useState<NewBook[]>()
-
-  async function fetchReadingList() {
-    try {
-      const data = await readingListGetAll()
-      setReadingList(data)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  async function handleReadingList(bookInfo) {
-    const isIt = readingList?.some((book) => book.title === bookInfo.title)
-    if (isIt) {
-      await readingListDelete(bookInfo.title)
-    } else {
-      await readingListCreate({
-        title: bookInfo.title,
-        publisher: bookInfo.publisher,
-      })
-    }
-
-    await fetchReadingList()
   }
   return {
     favorites,
     handleFavorite,
     fetchFavorites,
     isFavorite,
-    readingList,
-    handleReadingList,
-    fetchReadingList,
   }
 }

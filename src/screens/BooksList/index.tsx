@@ -3,6 +3,8 @@ import { ListCard } from '@components/ListCard'
 import LoadingAnimation from '@components/Loading'
 import { SearchInput } from '@components/SearchInput'
 import { Text } from '@components/Text'
+import useFavoritesList from '@hooks/storage/favorites'
+import useReadingList from '@hooks/storage/readingList'
 import {
   useFocusEffect,
   useNavigation,
@@ -15,18 +17,17 @@ import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native'
 import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-import useBooksList from './useBooksList'
-
 type RouteParams = {
   inputKeyword: string
   books: []
   isISBNString: boolean
 }
-type TestTypes = {
+type VolumeType = {
   item: {
     volumeInfo: {
       title: string
       authors: string[]
+      publisher: string
       publishedDate: string
       imageLinks: {
         thumbnail: string
@@ -44,14 +45,9 @@ export function BooksList() {
   const [input, setInput] = useState(inputKeyword)
   const [isISBN, setIsISBN] = useState(isISBNString)
   const [booksStore, setBooksStore] = useState(books)
-  const {
-    favorites,
-    handleFavorite,
-    fetchFavorites,
-    readingList,
-    handleReadingList,
-    fetchReadingList,
-  } = useBooksList()
+  const { isFavorite, handleFavorite, fetchFavorites } = useFavoritesList()
+  const { isInReadingList, handleReadingList, fetchReadingList } =
+    useReadingList()
 
   const { data, refetch, fetchNextPage, isFetching, isSuccess } =
     useBookByKeyword({
@@ -103,28 +99,30 @@ export function BooksList() {
   )
 
   const renderItem = useCallback(
-    ({ item, index }: TestTypes) => {
+    ({ item, index }: VolumeType) => {
       return (
         <ListCard
           volumeInfo={item.volumeInfo}
           press={() =>
-            navigation.navigate('details', {
+            navigation.navigate('bookDetails', {
               bookInfo: item.volumeInfo,
             })
           }
           index={index}
           handleFavorite={() => handleFavorite(item.volumeInfo)}
           handleReadingList={() => handleReadingList(item.volumeInfo)}
-          isFavorite={favorites?.some(
-            (book) => book.title === item.volumeInfo.title,
-          )}
-          isReadingList={readingList?.some(
-            (book) => book.title === item.volumeInfo.title,
-          )}
+          isFavorite={isFavorite(item.volumeInfo)}
+          isReadingList={isInReadingList(item.volumeInfo)}
         />
       )
     },
-    [favorites, handleFavorite, handleReadingList, navigation, readingList],
+    [
+      handleFavorite,
+      handleReadingList,
+      isFavorite,
+      isInReadingList,
+      navigation,
+    ],
   )
   const renderFooter = useCallback(() => {
     return isISBN ? (
@@ -170,7 +168,7 @@ export function BooksList() {
               removeClippedSubviews
               maxToRenderPerBatch={5}
               ListFooterComponent={renderFooter}
-              renderItem={({ item, index }: TestTypes) =>
+              renderItem={({ item, index }: VolumeType) =>
                 renderItem({ item, index })
               }
             />

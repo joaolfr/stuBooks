@@ -15,7 +15,9 @@ module.exports = function(api) {
             '@storage':'./src/storage',
             '@utils':'./src/utils',
             '@theme':'./src/theme',
-            '@api':'./src/api'
+            '@api':'./src/api',
+            '@hooks':'./src/hooks',
+            '@events':'./src/utils/events',
           }
         }
       ],

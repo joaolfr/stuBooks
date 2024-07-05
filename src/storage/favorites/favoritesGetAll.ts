@@ -3,7 +3,12 @@ import { FAVORITE_COLLECTION } from '@storage/storageConfig'
 
 type NewBook = {
   title: string
+  authors: string[]
   publisher: string
+  publishedDate: string
+  imageLinks: {
+    thumbnail: string
+  }
 }
 export async function favoritesGetAll() {
   // eslint-disable-next-line no-useless-catch

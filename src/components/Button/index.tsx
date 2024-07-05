@@ -15,7 +15,7 @@ export const Button = ({
   onPress,
   type = 'primary',
   fetching,
-  disabled
+  disabled,
 }: CustomButtonProps) => {
   return (
     <TouchableOpacity

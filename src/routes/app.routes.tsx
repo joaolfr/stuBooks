@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { BooksList, Details, Home } from '@screens/index'
+import { BookDetails, BooksList, Home } from '@screens/index'
 import theme from '@theme/index'
 import { StyleSheet } from 'react-native'
 
@@ -16,16 +16,16 @@ export function AppRoutes() {
       <Screen
         name="home"
         component={Home}
-        options={{ animation: 'fade', animationDuration: 100 }}
+        options={{ animation: 'fade', animationDuration: 500 }}
       />
       <Screen
         name="booksList"
         component={BooksList}
-        options={{ animation: 'fade', animationDuration: 100 }}
+        options={{ animation: 'fade', animationDuration: 500 }}
       />
       <Screen
-        name="details"
-        component={Details}
+        name="bookDetails"
+        component={BookDetails}
         options={{ animation: 'fade', animationDuration: 500 }}
       />
     </Navigator>
@@ -35,6 +35,7 @@ export function AppRoutes() {
 const styles = StyleSheet.create({
   contentStyle: {
     backgroundColor: theme.COLORS.APP_BG,
-    padding: theme.PADDING.p4,
+    paddingHorizontal: theme.PADDING.p2,
+    paddingVertical: theme.PADDING.p4,
   },
 })

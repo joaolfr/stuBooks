@@ -57,21 +57,18 @@ export function Home() {
         exiting={FadeOutUp.duration(500)}
         entering={FadeInUp.duration(1000)}
         style={styles.inputWrapper}
-        on
       >
         <Image
           source={require('@assets/logo.png')}
           alt="logo"
           style={styles.logo}
         />
-        {/* TODO: implement empty search message? */}
         <SearchInput
           value={inputKeyword}
           onChange={setInputKeyword}
           submit={handlePress}
         />
       </Animated.View>
-      {/* <Loading /> */}
       <View style={styles.footer}>
         <Animated.View
           entering={FadeInDown.duration(1000)}

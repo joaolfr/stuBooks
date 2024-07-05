@@ -7,7 +7,7 @@ export declare global {
         books: []
         isISBNString: boolean
       }
-      details: {
+      bookDetails: {
         bookInfo: object
       }
     }

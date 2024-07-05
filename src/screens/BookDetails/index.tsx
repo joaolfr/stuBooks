@@ -2,19 +2,11 @@ import { CustomImage } from '@components/CustomImage'
 import { Text } from '@components/Text'
 import EvilIcons from '@expo/vector-icons/EvilIcons'
 import FeatherIcons from '@expo/vector-icons/Feather'
+import useFavoritesList from '@hooks/storage/favorites'
+import useReadingList from '@hooks/storage/readingList'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import {
-  favoriteCreate,
-  favoriteDelete,
-  favoritesGetAll,
-} from '@storage/favorites'
-import {
-  readingListCreate,
-  readingListDelete,
-  readingListGetAll,
-} from '@storage/readingList'
 import theme from '@theme/index'
-import React, { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import {
   SafeAreaView,
   ScrollView,
@@ -36,66 +28,19 @@ type RouteParams = {
   bookInfo: ObjectInfo
 }
 
-export function Details() {
+export function BookDetails() {
   const navigation = useNavigation()
   const route = useRoute()
   const { bookInfo } = route.params as RouteParams
 
-  const [isFavorite, setIsFavorite] = useState(false)
-  const [isReadingList, setIsReadingList] = useState(false)
-
-  async function fetchFavorites() {
-    try {
-      const data = await favoritesGetAll()
-      const isIt = data?.some((book) => book.title === bookInfo.title)
-      setIsFavorite(isIt)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  async function handleFavorite() {
-    if (isFavorite) {
-      await favoriteDelete(bookInfo.title)
-    } else {
-      await favoriteCreate({
-        title: bookInfo.title,
-        // TODO: mudar esse publisher
-        publisher: bookInfo.publisher,
-      })
-    }
-
-    await fetchFavorites()
-  }
-
-  async function fetchReadingList() {
-    try {
-      const data = await readingListGetAll()
-      const isIt = data?.some((book) => book.title === bookInfo.title)
-      setIsReadingList(isIt)
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  async function handleReadingList() {
-    if (isReadingList) {
-      await readingListDelete(bookInfo.title)
-    } else {
-      await readingListCreate({
-        title: bookInfo.title,
-        // TODO: mudar esse publisher
-        publisher: bookInfo.publisher,
-      })
-    }
-
-    await fetchReadingList()
-  }
+  const { isFavorite, handleFavorite, fetchFavorites } = useFavoritesList()
+  const { isInReadingList, handleReadingList, fetchReadingList } =
+    useReadingList()
 
   useEffect(() => {
     fetchFavorites()
     fetchReadingList()
-  })
+  }, [])
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -129,37 +74,45 @@ export function Details() {
                 {bookInfo.publishedDate?.slice(0, 4)} ⋅{' '}
               </Text>
               <Text size="MD" color={theme.COLORS.GRAY_700}>
-                {bookInfo.authors}
+                {bookInfo.authors?.map((item, index) =>
+                  index !== bookInfo.authors.length - 1
+                    ? `${item} | `
+                    : `${item}`,
+                )}
               </Text>
             </View>
           </View>
         </View>
         <View style={styles.buttonWrapper}>
           <TouchableOpacity
-            style={[isFavorite ? styles.activeFavButton : styles.favButton]}
-            onPress={handleFavorite}
+            style={[
+              isFavorite(bookInfo) ? styles.activeFavButton : styles.favButton,
+            ]}
+            onPress={() => handleFavorite(bookInfo)}
           >
-            {isFavorite ? (
+            {isFavorite(bookInfo) ? (
               <View style={styles.listButtonWrapper}>
                 <EvilIcons name="star" size={20} color={theme.COLORS.PRIMARY} />
                 <Text weight="bold" color={theme.COLORS.PRIMARY}>
-                  Remove from fav
+                  Remove favorite
                 </Text>
               </View>
             ) : (
               <View style={styles.listButtonWrapper}>
                 <EvilIcons name="star" size={20} color={theme.COLORS.WHITE} />
-                <Text weight="bold">Add to fav</Text>
+                <Text weight="bold">Add to favorites</Text>
               </View>
             )}
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={handleReadingList}
+            onPress={() => handleReadingList(bookInfo)}
             style={[
-              isReadingList ? styles.activeWishButton : styles.wishButton,
+              isInReadingList(bookInfo)
+                ? styles.activeWishButton
+                : styles.wishButton,
             ]}
           >
-            {isReadingList ? (
+            {isInReadingList(bookInfo) ? (
               <View style={styles.listButtonWrapper}>
                 <FeatherIcons name="bookmark" color={theme.COLORS.PRIMARY} />
                 <Text weight="bold" color={theme.COLORS.PRIMARY}>

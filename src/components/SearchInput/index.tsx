@@ -3,7 +3,6 @@ import theme from '@theme/index'
 import { useState } from 'react'
 import { StyleProp, StyleSheet, TextInput, ViewStyle } from 'react-native'
 import Animated from 'react-native-reanimated'
-// TODO: create a reusable icon component?
 
 type InputProps = {
   value: string

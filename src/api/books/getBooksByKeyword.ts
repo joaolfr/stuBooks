@@ -1,5 +1,7 @@
 import { api } from '@api/config'
 import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query'
+import { EVENT } from '@utils/events'
+import track from '@utils/events/config'
 
 type GetBooksQueryParams = {
   inputKeyword: string
@@ -12,12 +14,10 @@ const fetchBooks = async ({
   startIndex,
   isISBNString,
 }: GetBooksQueryParams) => {
-  console.log(
-    `${isISBNString ? 'isbn:' + inputKeyword : inputKeyword}&startIndex=${startIndex}&maxResults=20`,
-  )
   const { data } = await api.get(
     `${isISBNString ? 'isbn:' + inputKeyword : inputKeyword}&startIndex=${startIndex}&maxResults=20`,
   )
+  track(EVENT.BooksListFetched)
   return data
 }
 

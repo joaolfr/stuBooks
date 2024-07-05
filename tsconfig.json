@@ -28,6 +28,12 @@
        "@api/*":[
         "./src/api/*"
       ],
+      "@hooks/*":[
+        "./src/hooks/*"
+      ],
+      "@events/*":[
+        "./src/utils/events/*"
+      ],
     }
   }
 }
