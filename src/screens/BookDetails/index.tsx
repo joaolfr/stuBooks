@@ -1,13 +1,21 @@
+import { CustomImage } from '@components/CustomImage'
 import { Text } from '@components/Text'
 import EvilIcons from '@expo/vector-icons/EvilIcons'
+import FeatherIcons from '@expo/vector-icons/Feather'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import { favoriteDelete } from '@storage/favorites/favoriteDelete'
-import { favoritesCreate } from '@storage/favorites/favoritesCreate'
-import { favoritesGetAll } from '@storage/favorites/favoritesGetAll'
+import {
+  favoriteCreate,
+  favoriteDelete,
+  favoritesGetAll,
+} from '@storage/favorites'
+import {
+  readingListCreate,
+  readingListDelete,
+  readingListGetAll,
+} from '@storage/readingList'
 import theme from '@theme/index'
 import React, { useEffect, useState } from 'react'
 import {
-  Image,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -34,6 +42,7 @@ export function Details() {
   const { bookInfo } = route.params as RouteParams
 
   const [isFavorite, setIsFavorite] = useState(false)
+  const [isReadingList, setIsReadingList] = useState(false)
 
   async function fetchFavorites() {
     try {
@@ -49,7 +58,7 @@ export function Details() {
     if (isFavorite) {
       await favoriteDelete(bookInfo.title)
     } else {
-      await favoritesCreate({
+      await favoriteCreate({
         title: bookInfo.title,
         // TODO: mudar esse publisher
         publisher: bookInfo.publisher,
@@ -59,8 +68,33 @@ export function Details() {
     await fetchFavorites()
   }
 
+  async function fetchReadingList() {
+    try {
+      const data = await readingListGetAll()
+      const isIt = data?.some((book) => book.title === bookInfo.title)
+      setIsReadingList(isIt)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  async function handleReadingList() {
+    if (isReadingList) {
+      await readingListDelete(bookInfo.title)
+    } else {
+      await readingListCreate({
+        title: bookInfo.title,
+        // TODO: mudar esse publisher
+        publisher: bookInfo.publisher,
+      })
+    }
+
+    await fetchReadingList()
+  }
+
   useEffect(() => {
     fetchFavorites()
+    fetchReadingList()
   })
 
   return (
@@ -80,22 +114,22 @@ export function Details() {
           </Text>
         </TouchableOpacity>
         <View style={styles.infoCard}>
-          <Image
-            source={{ uri: bookInfo.imageLinks?.thumbnail }}
-            height={theme.PADDING.p6 * 5}
-            width={theme.PADDING.p7 * 3}
-            alt={bookInfo.title}
-          />
+          <View style={styles.bookThumbnail}>
+            <CustomImage
+              url={bookInfo.imageLinks?.thumbnail}
+              alt={bookInfo.title}
+            />
+          </View>
           <View style={styles.headerWrapper}>
             <Text size="SM" color={theme.COLORS.GRAY_700} weight="bold">
               {bookInfo.title}
             </Text>
             <View style={styles.detailsText}>
               <Text size="MD" color={theme.COLORS.GRAY_700}>
-                {bookInfo.publishedDate.slice(0, 4)} ⋅{' '}
+                {bookInfo.publishedDate?.slice(0, 4)} ⋅{' '}
               </Text>
               <Text size="MD" color={theme.COLORS.GRAY_700}>
-                {bookInfo.authors[0]}
+                {bookInfo.authors}
               </Text>
             </View>
           </View>
@@ -108,17 +142,36 @@ export function Details() {
             {isFavorite ? (
               <View style={styles.listButtonWrapper}>
                 <EvilIcons name="star" size={20} color={theme.COLORS.PRIMARY} />
-                <Text color={theme.COLORS.PRIMARY}>Remove from fav</Text>
+                <Text weight="bold" color={theme.COLORS.PRIMARY}>
+                  Remove from fav
+                </Text>
               </View>
             ) : (
               <View style={styles.listButtonWrapper}>
                 <EvilIcons name="star" size={20} color={theme.COLORS.WHITE} />
-                <Text>Add to fav</Text>
+                <Text weight="bold">Add to fav</Text>
               </View>
             )}
           </TouchableOpacity>
-          <TouchableOpacity style={styles.wishButton}>
-            <Text>Add to wish</Text>
+          <TouchableOpacity
+            onPress={handleReadingList}
+            style={[
+              isReadingList ? styles.activeWishButton : styles.wishButton,
+            ]}
+          >
+            {isReadingList ? (
+              <View style={styles.listButtonWrapper}>
+                <FeatherIcons name="bookmark" color={theme.COLORS.PRIMARY} />
+                <Text weight="bold" color={theme.COLORS.PRIMARY}>
+                  Remove from list
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.listButtonWrapper}>
+                <FeatherIcons name="bookmark" color={theme.COLORS.WHITE} />
+                <Text weight="bold">Add to reading list</Text>
+              </View>
+            )}
           </TouchableOpacity>
         </View>
         <Text
@@ -129,7 +182,6 @@ export function Details() {
         >
           About
         </Text>
-        {/* TODO: fix text colors around the app */}
         <Text size="MD" color={theme.COLORS.GRAY_700}>
           {bookInfo.description}
         </Text>
@@ -160,6 +212,10 @@ const styles = StyleSheet.create({
     height: theme.PADDING.p8 * 4,
     borderRadius: 8,
   },
+  bookThumbnail: {
+    height: theme.PADDING.p8 * 3,
+    width: theme.PADDING.p8 * 2,
+  },
   headerWrapper: {
     height: '100%',
     flex: 1,
@@ -179,19 +235,29 @@ const styles = StyleSheet.create({
   listButtonWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-evenly',
+    width: '90%',
   },
+
   activeFavButton: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: theme.COLORS.STANDART, // TODO: implement the reference to the theme colors
+    backgroundColor: theme.COLORS.STANDART,
   },
   favButton: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: theme.COLORS.PRIMARY, // TODO: implement the reference to the theme colors
+    backgroundColor: theme.COLORS.PRIMARY,
+    borderRightColor: theme.COLORS.WHITE,
+    borderRightWidth: 1,
+  },
+  activeWishButton: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: theme.COLORS.STANDART,
   },
   wishButton: {
     flex: 1,

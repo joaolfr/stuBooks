@@ -5,6 +5,7 @@ export declare global {
       booksList: {
         inputKeyword: string
         books: []
+        isISBNString: boolean
       }
       details: {
         bookInfo: object

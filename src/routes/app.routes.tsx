@@ -1,6 +1,7 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import { BooksList, Details, Home } from '@screens/index'
 import theme from '@theme/index'
+import { StyleSheet } from 'react-native'
 
 const { Navigator, Screen } = createNativeStackNavigator()
 
@@ -9,10 +10,14 @@ export function AppRoutes() {
     <Navigator
       screenOptions={{
         headerShown: false,
-        contentStyle: { backgroundColor: theme.COLORS.APP_BG, padding: 20 },
+        contentStyle: styles.contentStyle,
       }}
     >
-      <Screen name="home" component={Home} />
+      <Screen
+        name="home"
+        component={Home}
+        options={{ animation: 'fade', animationDuration: 100 }}
+      />
       <Screen
         name="booksList"
         component={BooksList}
@@ -26,3 +31,10 @@ export function AppRoutes() {
     </Navigator>
   )
 }
+
+const styles = StyleSheet.create({
+  contentStyle: {
+    backgroundColor: theme.COLORS.APP_BG,
+    padding: theme.PADDING.p4,
+  },
+})

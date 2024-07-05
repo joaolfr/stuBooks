@@ -5,8 +5,9 @@ import { ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native'
 type CustomButtonProps = {
   children: React.ReactNode
   onPress: () => void
-  type: 'primary' | 'secondary' | 'clear'
+  type?: 'primary' | 'secondary' | 'clear'
   fetching: boolean
+  disabled: boolean
 }
 
 export const Button = ({
@@ -14,15 +15,16 @@ export const Button = ({
   onPress,
   type = 'primary',
   fetching,
+  disabled
 }: CustomButtonProps) => {
   return (
     <TouchableOpacity
       onPress={onPress}
       style={[styles.button, styles[type]]}
-      disabled={fetching}
+      disabled={disabled}
     >
       {fetching ? (
-        <ActivityIndicator size={30} color={'#fff'} />
+        <ActivityIndicator size={theme.PADDING.p7} color={theme.COLORS.WHITE} />
       ) : (
         <Text
           size="MD"
@@ -50,7 +52,10 @@ const styles = StyleSheet.create({
     backgroundColor: theme.COLORS.PRIMARY,
   },
   secondary: {
-    backgroundColor: theme.COLORS.PRIMARY,
+    backgroundColor: theme.COLORS.SECONDARY,
+  },
+  clear: {
+    backgroundColor: theme.COLORS.STANDART,
   },
   text: {
     textAlign: 'center',

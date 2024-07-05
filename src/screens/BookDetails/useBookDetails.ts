@@ -15,7 +15,7 @@ type NewBook = {
   publisher: string
 }
 
-export default function useBooksList() {
+export default function useBookDetail() {
   // Favorites
   const [favorites, setFavorites] = useState<NewBook[]>()
 
@@ -42,10 +42,12 @@ export default function useBooksList() {
 
     await fetchFavorites()
   }
+
   async function isFavorite(bookInfo){
     const isIt = favorites?.some((book) => book.title === bookInfo.title)
     return isIt
   }
+
   // Reading List
 
   const [readingList, setReadingList] = useState<NewBook[]>()

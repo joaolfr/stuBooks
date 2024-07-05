@@ -9,7 +9,7 @@ type NewBook = {
   publisher: string
 }
 
-export async function favoritesCreate(newFavorites: NewBook) {
+export async function favoriteCreate(newFavorites: NewBook) {
   // eslint-disable-next-line no-useless-catch
   try {
     const storedFavorites = await favoritesGetAll()

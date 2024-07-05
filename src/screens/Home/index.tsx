@@ -1,4 +1,3 @@
-import useBookByISBN from '@api/books/getBookByISBN'
 import useBookByKeyword from '@api/books/getBooksByKeyword'
 import { Button } from '@components/Button'
 import { SearchInput } from '@components/SearchInput'
@@ -19,51 +18,38 @@ const startIndex = 0
 
 export function Home() {
   const navigation = useNavigation()
-  const [inputKeyword, setInputKeyword] = useState('9781786469571')
+  //
+  const [inputKeyword, setInputKeyword] = useState('')
+  const [isISBNString, setIsISBNString] = useState(false)
+  //
   const { data, refetch, isFetching, isSuccess, isFetched } = useBookByKeyword({
     inputKeyword,
     startIndex,
+    isISBNString,
   })
 
-  const {
-    data: dataISBN,
-    refetch: refetchISBN,
-    isFetched: isFetchedISBN,
-    isFetching: isFetchingISBN,
-  } = useBookByISBN({
-    isbn: inputKeyword,
-  })
-
-  // TODO: refactor this logic bellow?
+  useEffect(() => {
+    if (isValidISBNCode(inputKeyword)) {
+      setIsISBNString(true)
+    } else {
+      setIsISBNString(false)
+    }
+  }, [inputKeyword])
 
   const handlePress = useCallback(async () => {
-    if (isValidISBNCode(inputKeyword)) {
-      await refetchISBN()
-    } else {
-      await refetch()
-    }
-  }, [inputKeyword, refetch, refetchISBN])
+    refetch()
+  }, [refetch])
+
   useEffect(() => {
-    if (isValidISBNCode(inputKeyword) && isFetchedISBN) {
-      navigation.navigate('booksList', { inputKeyword, books: dataISBN.items })
-      setInputKeyword('')
-    }
     if (isFetched && data) {
       navigation.navigate('booksList', {
         inputKeyword,
         books: data.pages[0].items,
+        isISBNString,
       })
       setInputKeyword('')
     }
-  }, [
-    data,
-    dataISBN,
-    inputKeyword,
-    isFetched,
-    isFetchedISBN,
-    isSuccess,
-    navigation,
-  ])
+  }, [data, isISBNString, isFetched, isSuccess, navigation, inputKeyword])
 
   return (
     <SafeAreaView mode="margin" style={styles.container}>
@@ -71,33 +57,36 @@ export function Home() {
         exiting={FadeOutUp.duration(500)}
         entering={FadeInUp.duration(1000)}
         style={styles.inputWrapper}
+        on
       >
         <Image
           source={require('@assets/logo.png')}
           alt="logo"
           style={styles.logo}
         />
-
+        {/* TODO: implement empty search message? */}
         <SearchInput
           value={inputKeyword}
           onChange={setInputKeyword}
           submit={handlePress}
         />
       </Animated.View>
-
+      {/* <Loading /> */}
       <View style={styles.footer}>
         <Animated.View
           entering={FadeInDown.duration(1000)}
           exiting={FadeOutDown.duration(300)}
         >
-          {/* TODO: for some reason, pressing the button without text is seaching something and not showing anything */}
-          <Button
-            type="primary"
-            fetching={isFetching || isFetchingISBN}
-            onPress={handlePress}
-          >
-            <Text>Search</Text>
-          </Button>
+          {inputKeyword !== '' && (
+            <Button
+              type="primary"
+              fetching={isFetching}
+              onPress={handlePress}
+              disabled={isFetching}
+            >
+              <Text>Search</Text>
+            </Button>
+          )}
         </Animated.View>
       </View>
     </SafeAreaView>

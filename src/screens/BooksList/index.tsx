@@ -1,7 +1,8 @@
-import useBookByISBN from '@api/books/getBookByISBN'
 import useBookByKeyword from '@api/books/getBooksByKeyword'
 import { ListCard } from '@components/ListCard'
+import LoadingAnimation from '@components/Loading'
 import { SearchInput } from '@components/SearchInput'
+import { Text } from '@components/Text'
 import {
   useFocusEffect,
   useNavigation,
@@ -9,7 +10,7 @@ import {
 } from '@react-navigation/native'
 import theme from '@theme/index'
 import { isValidISBNCode } from '@utils/isISBN'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native'
 import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -19,96 +20,123 @@ import useBooksList from './useBooksList'
 type RouteParams = {
   inputKeyword: string
   books: []
+  isISBNString: boolean
+}
+type TestTypes = {
+  item: {
+    volumeInfo: {
+      title: string
+      authors: string[]
+      publishedDate: string
+      imageLinks: {
+        thumbnail: string
+      }
+    }
+  }
+  index: number
 }
 
 export function BooksList() {
   const navigation = useNavigation()
   const route = useRoute()
-  const { inputKeyword, books } = route.params as RouteParams
+  const { inputKeyword, books, isISBNString } = route.params as RouteParams
 
   const [input, setInput] = useState(inputKeyword)
-  const [isISBN, setIsISBN] = useState(false)
+  const [isISBN, setIsISBN] = useState(isISBNString)
   const [booksStore, setBooksStore] = useState(books)
-  const { favorites, handleFavorite, fetchFavorites } = useBooksList()
-
-  const { data, refetch, isFetching, isSuccess, isFetched } = useBookByKeyword({
-    inputKeyword: input,
-    startIndex: 0,
-  })
-
   const {
-    data: dataISBN,
-    refetch: refetchISBN,
-    isFetched: isFetchedISBN,
-    isFetching: isFetchingISBN,
-  } = useBookByISBN({
-    isbn: input,
-  })
+    favorites,
+    handleFavorite,
+    fetchFavorites,
+    readingList,
+    handleReadingList,
+    fetchReadingList,
+  } = useBooksList()
 
-  // TODO: refactor this logic bellow?
+  const { data, refetch, fetchNextPage, isFetching, isSuccess } =
+    useBookByKeyword({
+      inputKeyword: input,
+      startIndex: 0,
+      isISBNString: isISBN,
+    })
+
+  //
+
+  const handleClose = useCallback(() => {
+    setInput('')
+    navigation.goBack()
+  }, [navigation])
 
   const handlePress = useCallback(async () => {
+    setBooksStore([])
+    await refetch()
+  }, [refetch])
+
+  const handleNext = useCallback(async () => {
+    if (!isISBN) {
+      await fetchNextPage()
+    }
+  }, [isISBN, fetchNextPage])
+
+  //
+
+  useEffect(() => {
     if (isValidISBNCode(input)) {
       setIsISBN(true)
-      await refetchISBN()
     } else {
       setIsISBN(false)
-      await refetch()
     }
-  }, [input, refetch, refetchISBN])
+  }, [input])
 
-  function handleClose() {
-    console.log('closed')
-    navigation.goBack()
-  }
+  useEffect(() => {
+    const newData = data?.pages.reduce((acc, page) => {
+      return [...acc, ...page.items]
+    }, [])
+    setBooksStore(newData)
+  }, [data])
 
-  const renderFooter = () => {
-    return (
+  useFocusEffect(
+    useCallback(() => {
+      fetchFavorites()
+      fetchReadingList()
+    }, []),
+  )
+
+  const renderItem = useCallback(
+    ({ item, index }: TestTypes) => {
+      return (
+        <ListCard
+          volumeInfo={item.volumeInfo}
+          press={() =>
+            navigation.navigate('details', {
+              bookInfo: item.volumeInfo,
+            })
+          }
+          index={index}
+          handleFavorite={() => handleFavorite(item.volumeInfo)}
+          handleReadingList={() => handleReadingList(item.volumeInfo)}
+          isFavorite={favorites?.some(
+            (book) => book.title === item.volumeInfo.title,
+          )}
+          isReadingList={readingList?.some(
+            (book) => book.title === item.volumeInfo.title,
+          )}
+        />
+      )
+    },
+    [favorites, handleFavorite, handleReadingList, navigation, readingList],
+  )
+  const renderFooter = useCallback(() => {
+    return isISBN ? (
+      <Text color={theme.COLORS.GRAY_200}>End of list</Text>
+    ) : (
       <ActivityIndicator
         color={theme.COLORS.PRIMARY}
         size="large"
         style={styles.loadingIdication}
       />
     )
-  }
-
-  const bookiesStore = useMemo(() => {
-    console.log('memo', isFetching, isFetchingISBN)
-    if (isISBN && isFetchedISBN) {
-      console.log('memo1')
-      setBooksStore(dataISBN.items)
-    }
-    if (isFetched) {
-      console.log('memo2')
-      return data?.pages.reduce((acc, page) => {
-        return [...acc, ...page.items]
-      }, [])
-    }
-  }, [data, dataISBN, isFetched, isFetchedISBN, isISBN])
-
-  useEffect(() => {
-    if (isISBN) {
-      console.log('memo1')
-      setBooksStore(dataISBN.items)
-    } else {
-      console.log('memo2')
-      const newData = data?.pages.reduce((acc, page) => {
-        return [...acc, ...page.items]
-      }, [])
-      setBooksStore(newData)
-    }
-  }, [data, dataISBN])
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchFavorites()
-    }, [fetchFavorites]),
-  )
-
-  useEffect(() => {
-    const isIt = isValidISBNCode(inputKeyword)
-    setIsISBN(isIt)
-  }, [])
+  }, [isISBN])
 
   return (
     <SafeAreaView mode="margin" style={styles.container}>
@@ -128,41 +156,23 @@ export function BooksList() {
             submit={handlePress}
             handleClose={handleClose}
           />
-          {isISBN ? (
-            <ListCard
-              volumeInfo={booksStore[0].volumeInfo}
-              press={() =>
-                navigation.navigate('details', {
-                  bookInfo: booksStore[0].volumeInfo,
-                })
-              }
-              index={1}
-              handleFavorite={() => handleFavorite(item.volumeInfo)}
-              isFavorite={favorites?.some(
-                (book) => book.title === item.volumeInfo.title,
-              )}
-            />
-          ) : (
+
+          {isFetching && booksStore.length === 0 && (
+            <View style={{ width: 300, height: 300 }}>
+              <LoadingAnimation />
+            </View>
+          )}
+          {isSuccess && booksStore.length > 0 && (
             <FlatList
               data={booksStore}
               keyExtractor={(item, index) => `${index}`}
-              // onEndReached={fetchNextPage}
+              onEndReached={handleNext}
+              removeClippedSubviews
+              maxToRenderPerBatch={5}
               ListFooterComponent={renderFooter}
-              renderItem={({ item, index }) => (
-                <ListCard
-                  volumeInfo={item.volumeInfo}
-                  press={() =>
-                    navigation.navigate('details', {
-                      bookInfo: item.volumeInfo,
-                    })
-                  }
-                  index={index}
-                  handleFavorite={() => handleFavorite(item.volumeInfo)}
-                  isFavorite={favorites?.some(
-                    (book) => book.title === item.volumeInfo.title,
-                  )}
-                />
-              )}
+              renderItem={({ item, index }: TestTypes) =>
+                renderItem({ item, index })
+              }
             />
           )}
         </Animated.View>

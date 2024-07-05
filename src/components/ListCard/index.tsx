@@ -1,7 +1,9 @@
+import { CustomImage } from '@components/CustomImage'
 import { Text } from '@components/Text'
 import EvilIcons from '@expo/vector-icons/EvilIcons'
+import FeatherIcons from '@expo/vector-icons/Feather'
 import theme from '@theme/index'
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native'
+import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 
 type VolumeInfo = {
@@ -10,12 +12,14 @@ type VolumeInfo = {
     authors: string[]
     publishedDate: string
     imageLinks: {
-      smallThumbnail: string
+      thumbnail: string
     }
   }
   isFavorite: boolean | undefined
+  isReadingList: boolean | undefined
   press: () => void
   handleFavorite: () => void
+  handleReadingList: () => void
   index: number
 }
 
@@ -28,36 +32,35 @@ export function ListCard({
   index,
   isFavorite,
   handleFavorite,
+  isReadingList,
+  handleReadingList,
 }: VolumeInfo) {
   return (
     <TouchableOpacityAnimated
       style={styles.cardWrapper}
-      // TODO: this is causing a delay on render more items, bc the app take in consideration the delay for each item
-      entering={FadeInDown.duration(200).delay(200 * index)}
+      entering={FadeInDown.duration(200).delay(100 * (index < 5 ? index : 5))}
       onPress={press}
     >
-      <Image
-        source={{ uri: volumeInfo.imageLinks?.smallThumbnail }}
-        height={theme.PADDING.p8 * 3}
-        width={theme.PADDING.p8 * 2}
-        alt={volumeInfo.title}
-      />
+      <View style={styles.bookThumbnail}>
+        <CustomImage
+          url={volumeInfo.imageLinks?.thumbnail}
+          alt={volumeInfo.title}
+        />
+      </View>
       <View style={styles.insideContainer}>
-        <Text size="SM" color={theme.COLORS.GRAY_700} weight="bold">
+        <Text size="MD" color={theme.COLORS.GRAY_700} weight="bold">
           {volumeInfo.title}
         </Text>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
+        <View style={styles.subInformation}>
           <Text size="MD" color={theme.COLORS.GRAY_700}>
-            {/* TODO: entender pq ta vindo undefined */}
-            {/* {volumeInfo?.publishedDate.slice(0, 4)} ⋅{' '} */}
+            {volumeInfo?.publishedDate?.slice(0, 4)} ⋅{' '}
           </Text>
           <Text size="MD" color={theme.COLORS.GRAY_700}>
-            {/* {volumeInfo.authors.map((item, index) =>
+            {volumeInfo.authors?.map((item, index) =>
               index !== volumeInfo.authors.length - 1
                 ? `${item} | `
                 : `${item}`,
-            )} */}
-            {/* {volumeInfo.authors[0]} */}
+            )}
           </Text>
         </View>
         <View style={styles.buttonsWrapper}>
@@ -68,19 +71,45 @@ export function ListCard({
             {isFavorite ? (
               <View style={styles.listButtonWrapper}>
                 <EvilIcons name="star" size={20} color={theme.COLORS.WHITE} />
-                <Text color="white">Remove favorite</Text>
+                <Text weight="bold" color={theme.COLORS.WHITE}>
+                  Remove favorite
+                </Text>
               </View>
             ) : (
-              // TODO: the change between status, due to the async list get, sometimes take time, need some feedback
               <View style={styles.listButtonWrapper}>
                 <EvilIcons name="star" size={20} color={theme.COLORS.PRIMARY} />
 
-                <Text color={theme.COLORS.PRIMARY}>Add to favorites</Text>
+                <Text weight="bold" color={theme.COLORS.PRIMARY}>
+                  Add to favorites
+                </Text>
               </View>
             )}
           </TouchableOpacity>
-          <TouchableOpacity style={styles.readingListButton}>
-            <Text color={theme.COLORS.WHITE}>Add to reading list</Text>
+          <TouchableOpacity
+            onPress={handleReadingList}
+            style={[
+              isReadingList
+                ? styles.activeReadingButton
+                : styles.readingListButton,
+            ]}
+          >
+            {isReadingList ? (
+              <View style={styles.listButtonWrapper}>
+                <FeatherIcons name="bookmark" color={theme.COLORS.WHITE} />
+
+                <Text weight="bold" color={theme.COLORS.WHITE}>
+                  Remove from list
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.listButtonWrapper}>
+                <FeatherIcons name="bookmark" color={theme.COLORS.SECONDARY} />
+
+                <Text weight="bold" color={theme.COLORS.SECONDARY}>
+                  Add to reading list
+                </Text>
+              </View>
+            )}
           </TouchableOpacity>
         </View>
       </View>
@@ -106,8 +135,15 @@ const styles = StyleSheet.create({
     marginLeft: theme.PADDING.p1,
     justifyContent: 'space-between',
   },
+  bookThumbnail: {
+    height: theme.PADDING.p8 * 3,
+    width: theme.PADDING.p8 * 2,
+  },
+  subInformation: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
   buttonsWrapper: {
-    flex: 1,
     alignItems: 'flex-end',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -115,7 +151,8 @@ const styles = StyleSheet.create({
   listButtonWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-around',
+    justifyContent: 'space-evenly',
+    width: '100%',
   },
   activeFavButton: {
     height: theme.PADDING.p6,
@@ -127,11 +164,19 @@ const styles = StyleSheet.create({
   },
   favButton: {
     height: theme.PADDING.p6,
-    borderRadius: theme.PADDING.p6 / 2,
+    borderRadius: theme.PADDING.p3,
     width: '48%',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: theme.COLORS.WHITE,
+  },
+  activeReadingButton: {
+    height: theme.PADDING.p6,
+    borderRadius: theme.PADDING.p6 / 2,
+    width: '48%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: theme.COLORS.SECONDARY,
   },
   readingListButton: {
     height: theme.PADDING.p6,
@@ -139,6 +184,6 @@ const styles = StyleSheet.create({
     width: '48%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: theme.COLORS.SECONDAY,
+    backgroundColor: theme.COLORS.WHITE,
   },
 })

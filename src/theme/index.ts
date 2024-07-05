@@ -4,7 +4,7 @@ export default {
     WHITE: '#FFFFFF',
     STANDART: '#C8E0FA',
     PRIMARY: '#3092FA',
-    SECONDAY: '#F064FC',
+    SECONDARY: '#F064FC',
     CARD_BG: '#E6EBEF',
 
     GRAY_700: '#121214',

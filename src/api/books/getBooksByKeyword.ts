@@ -4,14 +4,19 @@ import { keepPreviousData, useInfiniteQuery } from '@tanstack/react-query'
 type GetBooksQueryParams = {
   inputKeyword: string
   startIndex: number
+  isISBNString: boolean
 }
 
 const fetchBooks = async ({
   inputKeyword,
   startIndex,
+  isISBNString,
 }: GetBooksQueryParams) => {
+  console.log(
+    `${isISBNString ? 'isbn:' + inputKeyword : inputKeyword}&startIndex=${startIndex}&maxResults=20`,
+  )
   const { data } = await api.get(
-    `${inputKeyword}&startIndex=${startIndex}&maxResults=20`,
+    `${isISBNString ? 'isbn:' + inputKeyword : inputKeyword}&startIndex=${startIndex}&maxResults=20`,
   )
   return data
 }
@@ -29,6 +34,7 @@ export const useBookByKeyword = (params: GetBooksQueryParams) => {
       return {
         startIndex: pages.length * 20,
         inputKeyword: params.inputKeyword,
+        isISBNString: params.isISBNString,
       }
     },
   })
