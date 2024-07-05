@@ -25,6 +25,12 @@
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "ed2ff1af-b8a1-4d03-a7f6-6ff2d989e167"
+      }
+    },
+    "owner": "joaolfr"
   }
 }

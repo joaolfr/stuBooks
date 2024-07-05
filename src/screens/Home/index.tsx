@@ -74,16 +74,14 @@ export function Home() {
           entering={FadeInDown.duration(1000)}
           exiting={FadeOutDown.duration(300)}
         >
-          {inputKeyword !== '' && (
-            <Button
-              type="primary"
-              fetching={isFetching}
-              onPress={handlePress}
-              disabled={isFetching}
-            >
-              <Text>Search</Text>
-            </Button>
-          )}
+          <Button
+            type="primary"
+            fetching={isFetching}
+            onPress={handlePress}
+            disabled={isFetching}
+          >
+            <Text>Search</Text>
+          </Button>
         </Animated.View>
       </View>
     </SafeAreaView>
