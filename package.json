@@ -60,5 +60,9 @@
       "!**/jest.setup.js"
     ]
   },
-  "private": true
+  "private": true,
+   "engines" : { 
+    "npm" : ">=9",
+    "node" : ">=18"
+  }
 }
