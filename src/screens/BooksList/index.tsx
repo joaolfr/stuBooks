@@ -11,7 +11,7 @@ import {
   useRoute,
 } from '@react-navigation/native'
 import theme from '@theme/index'
-import { isValidISBNCode } from '@utils/isISBN'
+import { isValidISBNCode } from '@utils/ISBN/isISBN'
 import { useCallback, useEffect, useState } from 'react'
 import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native'
 import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated'

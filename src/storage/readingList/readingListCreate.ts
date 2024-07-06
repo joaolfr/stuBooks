@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { READING_LIST_COLLECTION } from '@storage/storageConfig'
-import { AppError } from '@utils/AppError'
+import { AppError } from '@utils/error/AppError'
 
 import { readingListGetAll } from './readingListGetAll'
 

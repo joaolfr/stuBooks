@@ -3,7 +3,7 @@ import { Button } from '@components/Button'
 import { SearchInput } from '@components/SearchInput'
 import { useNavigation } from '@react-navigation/native'
 import theme from '@theme/index'
-import { isValidISBNCode } from '@utils/isISBN'
+import { isValidISBNCode } from '@utils/ISBN/isISBN'
 import { useCallback, useEffect, useState } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
 import Animated, {

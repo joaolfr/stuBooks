@@ -1,4 +1,4 @@
-import { isValidISBNCode } from '@utils/isISBN'
+import { isValidISBNCode } from '@utils/ISBN/isISBN'
 
 describe('ISBN', () => {
   it('should return true if is a valid ISBN', () => {

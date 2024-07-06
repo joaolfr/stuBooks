@@ -12,11 +12,10 @@ const fetchBooks = async ({ isbn }: GetBooksQueryParams) => {
 
 export const useBookByISBN = (params: GetBooksQueryParams) => {
   return useQuery({
-    queryKey: ['booksByISBN', params],
+    queryKey: ['booksByISBN'],
     queryFn: () => {
       return fetchBooks(params)
     },
-    enabled: false,
     placeholderData: keepPreviousData,
   })
 }
