@@ -42,6 +42,7 @@ export function Home() {
 
   useEffect(() => {
     if (isFetched && data) {
+      console.log(data)
       navigation.navigate('booksList', {
         inputKeyword,
         books: data.pages[0].items,

@@ -3,7 +3,7 @@ import { render } from '@utils/test-utils'
 import { Home } from '..'
 
 describe(Home, () => {
-  it('home render correct', () => {
+  it('should render correctly', () => {
     const { getByText, getByPlaceholderText } = render(<Home />)
     const searchButton = getByText('Search')
     const searchInput = getByPlaceholderText('search for the book')

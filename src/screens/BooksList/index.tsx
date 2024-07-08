@@ -5,11 +5,7 @@ import { SearchInput } from '@components/SearchInput'
 import { Text } from '@components/Text'
 import useFavoritesList from '@hooks/storage/favorites'
 import useReadingList from '@hooks/storage/readingList'
-import {
-  useFocusEffect,
-  useNavigation,
-  useRoute,
-} from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import theme from '@theme/index'
 import { isValidISBNCode } from '@utils/ISBN/isISBN'
 import { useCallback, useEffect, useState } from 'react'
@@ -17,11 +13,6 @@ import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native'
 import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-type RouteParams = {
-  inputKeyword: string
-  books: []
-  isISBNString: boolean
-}
 type VolumeType = {
   item: {
     volumeInfo: {
@@ -36,12 +27,17 @@ type VolumeType = {
   }
   index: number
 }
+export type BooksListParams = {
+  params: {
+    books: []
+    inputKeyword: string
+    isISBNString: boolean
+  }
+}
 
-export function BooksList() {
+export function BooksList({ route }: { route: BooksListParams }) {
   const navigation = useNavigation()
-  const route = useRoute()
-  const { inputKeyword, books, isISBNString } = route.params as RouteParams
-
+  const { inputKeyword, books, isISBNString } = route.params
   const [input, setInput] = useState(inputKeyword)
   const [isISBN, setIsISBN] = useState(isISBNString)
   const [booksStore, setBooksStore] = useState(books)
