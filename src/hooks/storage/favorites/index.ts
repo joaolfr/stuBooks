@@ -5,19 +5,9 @@ import {
 } from '@storage/favorites'
 import { useState } from 'react'
 
-type NewBook = {
-  title: string
-  authors: string[]
-  publisher: string
-  publishedDate: string
-  imageLinks: {
-    thumbnail: string
-  }
-}
-
 export default function useFavoritesList() {
   // Favorites
-  const [favorites, setFavorites] = useState<NewBook[]>()
+  const [favorites, setFavorites] = useState<VolumeType[]>()
 
   async function fetchFavorites() {
     try {
@@ -29,20 +19,32 @@ export default function useFavoritesList() {
     }
   }
 
-  async function handleFavorite(bookInfo: NewBook) {
+  async function handleFavorite(bookInfo: VolumeType) {
     const isIt = favorites?.some((book) => book.title === bookInfo.title)
+    const {
+      title,
+      description,
+      authors,
+      imageLinks,
+      publishedDate,
+      publisher,
+    } = bookInfo
     if (isIt) {
       await favoriteDelete(bookInfo.title)
     } else {
       await favoriteCreate({
-        title: bookInfo.title,
-        publisher: bookInfo.publisher,
+        title,
+        authors,
+        imageLinks,
+        publishedDate,
+        publisher,
+        description,
       })
     }
 
     await fetchFavorites()
   }
-  function isFavorite(bookInfo: NewBook) {
+  function isFavorite(bookInfo: VolumeType) {
     const isIt = favorites?.some((book) => book.title === bookInfo.title)
     return isIt
   }

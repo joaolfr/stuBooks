@@ -5,7 +5,11 @@ import { SearchInput } from '@components/SearchInput'
 import { Text } from '@components/Text'
 import useFavoritesList from '@hooks/storage/favorites'
 import useReadingList from '@hooks/storage/readingList'
-import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import {
+  useFocusEffect,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native'
 import theme from '@theme/index'
 import { isValidISBNCode } from '@utils/ISBN/isISBN'
 import { useCallback, useEffect, useState } from 'react'
@@ -13,31 +17,22 @@ import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native'
 import Animated, { FadeInDown, FadeOutDown } from 'react-native-reanimated'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-type VolumeType = {
+type VolumeInfoType = {
   item: {
-    volumeInfo: {
-      title: string
-      authors: string[]
-      publisher: string
-      publishedDate: string
-      imageLinks: {
-        thumbnail: string
-      }
-    }
+    volumeInfo: VolumeType
   }
   index: number
 }
-export type BooksListParams = {
-  params: {
-    books: []
-    inputKeyword: string
-    isISBNString: boolean
-  }
+export type RouteParams = {
+  books: []
+  inputKeyword: string
+  isISBNString: boolean
 }
 
-export function BooksList({ route }: { route: BooksListParams }) {
+export function BooksList() {
   const navigation = useNavigation()
-  const { inputKeyword, books, isISBNString } = route.params
+  const route = useRoute()
+  const { inputKeyword, books, isISBNString } = route.params as RouteParams
   const [input, setInput] = useState(inputKeyword)
   const [isISBN, setIsISBN] = useState(isISBNString)
   const [booksStore, setBooksStore] = useState(books)
@@ -95,7 +90,7 @@ export function BooksList({ route }: { route: BooksListParams }) {
   )
 
   const renderItem = useCallback(
-    ({ item, index }: VolumeType) => {
+    ({ item, index }: VolumeInfoType) => {
       return (
         <ListCard
           volumeInfo={item.volumeInfo}
@@ -164,7 +159,7 @@ export function BooksList({ route }: { route: BooksListParams }) {
               removeClippedSubviews
               maxToRenderPerBatch={5}
               ListFooterComponent={renderFooter}
-              renderItem={({ item, index }: VolumeType) =>
+              renderItem={({ item, index }: VolumeInfoType) =>
                 renderItem({ item, index })
               }
             />

@@ -7,14 +7,7 @@ import { StyleSheet, TouchableOpacity, View } from 'react-native'
 import Animated, { FadeInDown } from 'react-native-reanimated'
 
 type VolumeInfo = {
-  volumeInfo: {
-    title: string
-    authors: string[]
-    publishedDate: string
-    imageLinks: {
-      thumbnail: string
-    }
-  }
+  volumeInfo: VolumeType
   isFavorite: boolean | undefined
   isReadingList: boolean | undefined
   press: () => void

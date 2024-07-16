@@ -10,6 +10,8 @@ export declare global {
       bookDetails: {
         bookInfo: object
       }
+      favorites: undefined
+      readingList: undefined
     }
   }
 }

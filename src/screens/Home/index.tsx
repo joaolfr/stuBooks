@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native'
 import theme from '@theme/index'
 import { isValidISBNCode } from '@utils/ISBN/isISBN'
 import { useCallback, useEffect, useState } from 'react'
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import Animated, {
   FadeInDown,
   FadeInUp,
@@ -42,7 +42,6 @@ export function Home() {
 
   useEffect(() => {
     if (isFetched && data) {
-      console.log(data)
       navigation.navigate('booksList', {
         inputKeyword,
         books: data.pages[0].items,
@@ -54,6 +53,14 @@ export function Home() {
 
   return (
     <SafeAreaView mode="margin" style={styles.container}>
+      <View style={styles.listsContainer}>
+        <TouchableOpacity onPress={() => navigation.navigate('favorites')}>
+          <Text>Favorites</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('readingList')}>
+          <Text>Reading List</Text>
+        </TouchableOpacity>
+      </View>
       <Animated.View
         exiting={FadeOutUp.duration(500)}
         entering={FadeInUp.duration(1000)}
@@ -94,6 +101,11 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  listsContainer: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-evenly',
   },
   logo: {
     marginBottom: theme.PADDING.p8,

@@ -1,5 +1,11 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import { BookDetails, BooksList, Home } from '@screens/index'
+import {
+  BookDetails,
+  BooksList,
+  Favorites,
+  Home,
+  ReadingList,
+} from '@screens/index'
 import theme from '@theme/index'
 import { StyleSheet } from 'react-native'
 
@@ -27,6 +33,26 @@ export function AppRoutes() {
         name="bookDetails"
         component={BookDetails}
         options={{ animation: 'fade', animationDuration: 500 }}
+      />
+      <Screen
+        name="favorites"
+        component={Favorites}
+        options={{
+          animation: 'fade',
+          animationDuration: 500,
+          headerShown: true,
+          headerTitle: 'Favorites',
+        }}
+      />
+      <Screen
+        name="readingList"
+        component={ReadingList}
+        options={{
+          animation: 'fade',
+          animationDuration: 500,
+          headerShown: true,
+          headerTitle: 'Reading List',
+        }}
       />
     </Navigator>
   )

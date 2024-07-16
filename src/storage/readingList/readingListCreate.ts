@@ -4,12 +4,7 @@ import { AppError } from '@utils/error/AppError'
 
 import { readingListGetAll } from './readingListGetAll'
 
-type NewBook = {
-  title: string
-  publisher: string
-}
-
-export async function readingListCreate(newFavorites: NewBook) {
+export async function readingListCreate(newFavorites: VolumeType) {
   // eslint-disable-next-line no-useless-catch
   try {
     const storedReadingList = await readingListGetAll()

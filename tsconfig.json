@@ -3,6 +3,7 @@
   "compilerOptions": {
     "strict": true,
     "baseUrl": "./",
+    "typeRoots": ["./src/@types"],
     "paths":{
       "@assets/*":[
         "./src/assets/*"
@@ -34,6 +35,7 @@
       "@events/*":[
         "./src/utils/events/*"
       ],
+      
     }
   }
 }

@@ -6,12 +6,7 @@ import track from '@utils/events/config'
 
 import { favoritesGetAll } from './favoritesGetAll'
 
-type NewBook = {
-  title: string
-  publisher: string
-}
-
-export async function favoriteCreate(newFavorites: NewBook) {
+export async function favoriteCreate(newFavorites: VolumeType) {
   // eslint-disable-next-line no-useless-catch
   try {
     const storedFavorites = await favoritesGetAll()
@@ -26,6 +21,7 @@ export async function favoriteCreate(newFavorites: NewBook) {
     const storage = JSON.stringify([...storedFavorites, newFavorites])
     await AsyncStorage.setItem(FAVORITE_COLLECTION, storage)
     track(EVENT.BookAddedToFavorites, { data: newFavorites })
+    // AsyncStorage.clear()
   } catch (error) {
     throw error
   }
